@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PocketSmart AI</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💰 PocketSmart AI</h1>
+
+<div class="card">
+    <h2>Add Expense</h2>
+
+    <input id="category" placeholder="Category">
+    <input id="amount" type="number" placeholder="Amount">
+    <input id="description" placeholder="Description">
+
+    <button onclick="addExpense()">Add Expense</button>
+</div>
+
+<div class="card">
+    <h2>Budget</h2>
+    <button onclick="getBudget()">Check Spending</button>
+    <p id="result"></p>
+</div>
+
+<div class="card">
+    <h2>AI Recommendation</h2>
+    <button onclick="getRecommendation()">Get Recommendation</button>
+    <p id="recommendation"></p>
+</div>
+
+<script>
+async function addExpense() {
+    const category = document.getElementById("category").value;
+    const amount = Number(document.getElementById("amount").value);
+    const description = document.getElementById("description").value;
+
+    const response = await fetch("http://127.0.0.1:8000/expenses", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            category,
+            amount,
+            description
+        })
+    });
+
+    const data = await response.json();
+
+    alert(data.message);
+}
+
+async function getBudget() {
+    const response = await fetch("http://127.0.0.1:8000/budget");
+    const data = await response.json();
+
+    document.getElementById("result").innerText =
+        "Total Spending: ₹" + data.total_spending;
+}
+
+async function getRecommendation() {
+    const response =
+        await fetch("http://127.0.0.1:8000/recommendations");
+
+    const data = await response.json();
+
+    document.getElementById("recommendation").innerText =
+        data.recommendation;
+}
+</script>
+
+</body>
+</html>
